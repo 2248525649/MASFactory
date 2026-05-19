@@ -1875,3 +1875,162 @@ agent = Agent(
 _, user_prompt, _ = agent.observe({"query": "What is MCP?"})
 print(user_prompt)
 ```
+
+## Workflow Compatibility
+
+The compatibility package imports external workflow documents into MASFactory graphs.
+
+::: tip User Guide
+For task-oriented examples, see [`Workflow Compatibility`](/guide/compatibility).
+:::
+
+### Import Functions
+
+```python
+from masfactory.compatibility import (
+    load_graph_from_dify_yaml,
+    load_graph_from_dify_dict,
+    load_graph_from_chatdev_yaml,
+    load_graph_from_langflow_json,
+)
+```
+
+#### load_graph_from_dify_yaml()
+
+```python
+def load_graph_from_dify_yaml(
+    source: str | Path | bytes,
+    *,
+    graph_name: str | None = None,
+    options: DifyCompileOptions | None = None,
+    graph_design_path: str | Path | bool | None = None,
+) -> Graph
+```
+
+Loads a Dify YAML export. `kind: app` documents are compiled with Dify runtime semantics; generic `{nodes, edges}` documents are compiled as passthrough graphs.
+
+#### load_graph_from_dify_dict()
+
+```python
+def load_graph_from_dify_dict(
+    doc: dict,
+    *,
+    graph_name: str | None = None,
+    options: DifyCompileOptions | None = None,
+    graph_design_path: str | Path | bool | None = None,
+) -> Graph
+```
+
+Loads a Dify mapping that has already been parsed in Python.
+
+#### load_graph_from_chatdev_yaml()
+
+```python
+def load_graph_from_chatdev_yaml(
+    source: str | Path | bytes,
+    *,
+    graph_name: str = "chatdev_import",
+    options: ChatDevCompileOptions | None = None,
+    use_placeholder: bool = False,
+    graph_design_path: str | Path | bool | None = None,
+) -> ChatDevRootGraph | Graph
+```
+
+Loads a ChatDev workflow YAML or chain-style configuration. Set `use_placeholder=True` to build a topology-only passthrough graph.
+
+#### load_graph_from_langflow_json()
+
+```python
+def load_graph_from_langflow_json(
+    source: str | Path | bytes,
+    *,
+    graph_name: str = "langflow_import",
+    options: LangflowCompileOptions | None = None,
+    graph_design_path: str | Path | bool | None = None,
+) -> LangflowRootGraph
+```
+
+Loads a Langflow JSON export and compiles common chat-flow components into executable MASFactory nodes.
+
+### Common Loader Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `source` | `str \| Path \| bytes` | File path, inline document text, or UTF-8 bytes |
+| `graph_name` | `str \| None` | Name assigned to the generated graph |
+| `options` | Compile options | Product-specific runtime options |
+| `graph_design_path` | `str \| Path \| bool \| None` | Optional Visualizer `graph_design.json` export path |
+
+`graph_design_path=True` writes a generated preview file under `masfactory/compatibility/out/`. Relative paths are resolved under that directory; absolute paths are used directly.
+
+### Compile Options
+
+#### DifyCompileOptions
+
+```python
+@dataclass
+class DifyCompileOptions:
+    model_factory: Callable[[dict[str, Any]], Model] | None = None
+    use_stub_llm: bool = False
+    llm_stub_text: str = "stub-llm-response"
+    openai_api_key: str | None = None
+    openai_base_url: str | None = None
+    tool_executor: Callable[[dict[str, Any], dict[str, Any]], dict[str, Any]] | None = None
+    http_client: Callable[[dict[str, Any]], dict[str, Any]] | None = None
+    knowledge_retriever: Callable[[dict[str, Any], str], str] | None = None
+```
+
+By default, Dify LLM nodes resolve a real OpenAI-compatible model from Dify model settings. Set `use_stub_llm=True` for offline tests.
+
+#### ChatDevCompileOptions
+
+```python
+@dataclass
+class ChatDevCompileOptions:
+    model_factory: Callable[[dict[str, Any]], Model] | None = None
+    use_stub_llm: bool = True
+    llm_stub_text: str = "stub-chatdev-response"
+    openai_api_key: str | None = None
+    openai_base_url: str | None = None
+```
+
+#### LangflowCompileOptions
+
+```python
+@dataclass
+class LangflowCompileOptions:
+    model_factory: Callable[[dict[str, Any]], Model] | None = None
+    use_stub_llm: bool = True
+    llm_stub_text: str = "stub-langflow-response"
+    openai_api_key: str | None = None
+    openai_base_url: str | None = None
+```
+
+### Graph Design Helpers
+
+```python
+from masfactory.compatibility import (
+    dify_document_to_graph_design,
+    chatdev_document_to_graph_design,
+    langflow_document_to_graph_design,
+    write_graph_design_json,
+)
+```
+
+These helpers produce Visualizer-previewable `{"graph_design": ...}` documents without building an executable graph.
+
+### Blueprint-Level APIs
+
+The lower-level blueprint APIs are intended for extension work:
+
+```python
+from masfactory.compatibility import (
+    blueprint_to_graph,
+    blueprint_to_dify_graph,
+    blueprint_to_chatdev_graph,
+    blueprint_to_langflow_graph,
+    workflow_export_to_blueprint,
+)
+```
+
+`GraphBlueprint` is the normalized intermediate representation used by the importers. It contains `ExternalNode` and `ExternalEdge` records before they are materialized into MASFactory nodes and edges.

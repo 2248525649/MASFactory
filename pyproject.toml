@@ -58,7 +58,7 @@ exclude = [
 ]
 
 [tool.pytest.ini_options]
-testpaths = ["test"]
+testpaths = ["tests"]
 markers = [
   "live: opt-in integration tests requiring network+credentials",
 ]

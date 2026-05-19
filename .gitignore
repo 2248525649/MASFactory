@@ -129,7 +129,14 @@ config.local.toml
 tmp/
 temp/
 bug_pic/
-test/
+# Local-only compatibility samples and tests (not pushed to remote)
+local_fixtures/
+tests/
+# Generated graph_design previews from compatibility imports
+masfactory/compatibility/out/*
+!masfactory/compatibility/out/.gitkeep
+third_party/
+
 masfactory-visualizer/test/**
 masfactory-visualizer/test/
 **/tests/
@@ -159,7 +166,6 @@ vibe_test/**/results/
 vibe_test/**/legacy_backup/
 test_format/
 **/experiments/
-test/
 vibe_test/
 /examples/
 **/out/

@@ -1870,3 +1870,162 @@ agent = Agent(
 _, user_prompt, _ = agent.observe({"query": "What is MCP?"})
 print(user_prompt)
 ```
+
+## 工作流兼容层
+
+`masfactory.compatibility` 包可以把外部工作流文档导入为 MASFactory 图。
+
+::: tip 使用指南
+面向任务的使用示例见 [`工作流兼容层`](/zh/guide/compatibility)。
+:::
+
+### 导入函数
+
+```python
+from masfactory.compatibility import (
+    load_graph_from_dify_yaml,
+    load_graph_from_dify_dict,
+    load_graph_from_chatdev_yaml,
+    load_graph_from_langflow_json,
+)
+```
+
+#### load_graph_from_dify_yaml()
+
+```python
+def load_graph_from_dify_yaml(
+    source: str | Path | bytes,
+    *,
+    graph_name: str | None = None,
+    options: DifyCompileOptions | None = None,
+    graph_design_path: str | Path | bool | None = None,
+) -> Graph
+```
+
+加载 Dify YAML 导出。`kind: app` 文档会按 Dify 运行语义编译；通用 `{nodes, edges}` 文档会编译为透传图。
+
+#### load_graph_from_dify_dict()
+
+```python
+def load_graph_from_dify_dict(
+    doc: dict,
+    *,
+    graph_name: str | None = None,
+    options: DifyCompileOptions | None = None,
+    graph_design_path: str | Path | bool | None = None,
+) -> Graph
+```
+
+加载已经在 Python 中解析好的 Dify mapping。
+
+#### load_graph_from_chatdev_yaml()
+
+```python
+def load_graph_from_chatdev_yaml(
+    source: str | Path | bytes,
+    *,
+    graph_name: str = "chatdev_import",
+    options: ChatDevCompileOptions | None = None,
+    use_placeholder: bool = False,
+    graph_design_path: str | Path | bool | None = None,
+) -> ChatDevRootGraph | Graph
+```
+
+加载 ChatDev workflow YAML 或 chain 风格配置。设置 `use_placeholder=True` 时会构建只保留拓扑的透传图。
+
+#### load_graph_from_langflow_json()
+
+```python
+def load_graph_from_langflow_json(
+    source: str | Path | bytes,
+    *,
+    graph_name: str = "langflow_import",
+    options: LangflowCompileOptions | None = None,
+    graph_design_path: str | Path | bool | None = None,
+) -> LangflowRootGraph
+```
+
+加载 Langflow JSON 导出，并把常见聊天流组件编译为可执行的 MASFactory 节点。
+
+### 通用 Loader 参数
+
+| 参数 | 类型 | 描述 |
+|------|------|------|
+| `source` | `str \| Path \| bytes` | 文件路径、内联文档文本，或 UTF-8 bytes |
+| `graph_name` | `str \| None` | 生成图的名称 |
+| `options` | Compile options | 各产品对应的运行时选项 |
+| `graph_design_path` | `str \| Path \| bool \| None` | 可选的 Visualizer `graph_design.json` 导出路径 |
+
+`graph_design_path=True` 会在 `masfactory/compatibility/out/` 下写入自动命名的预览文件。相对路径会解析到该目录下；绝对路径会直接使用。
+
+### Compile Options
+
+#### DifyCompileOptions
+
+```python
+@dataclass
+class DifyCompileOptions:
+    model_factory: Callable[[dict[str, Any]], Model] | None = None
+    use_stub_llm: bool = False
+    llm_stub_text: str = "stub-llm-response"
+    openai_api_key: str | None = None
+    openai_base_url: str | None = None
+    tool_executor: Callable[[dict[str, Any], dict[str, Any]], dict[str, Any]] | None = None
+    http_client: Callable[[dict[str, Any]], dict[str, Any]] | None = None
+    knowledge_retriever: Callable[[dict[str, Any], str], str] | None = None
+```
+
+Dify 的 LLM 节点默认会根据 Dify model 配置解析真实 OpenAI-compatible 模型。离线测试时设置 `use_stub_llm=True`。
+
+#### ChatDevCompileOptions
+
+```python
+@dataclass
+class ChatDevCompileOptions:
+    model_factory: Callable[[dict[str, Any]], Model] | None = None
+    use_stub_llm: bool = True
+    llm_stub_text: str = "stub-chatdev-response"
+    openai_api_key: str | None = None
+    openai_base_url: str | None = None
+```
+
+#### LangflowCompileOptions
+
+```python
+@dataclass
+class LangflowCompileOptions:
+    model_factory: Callable[[dict[str, Any]], Model] | None = None
+    use_stub_llm: bool = True
+    llm_stub_text: str = "stub-langflow-response"
+    openai_api_key: str | None = None
+    openai_base_url: str | None = None
+```
+
+### Graph Design Helpers
+
+```python
+from masfactory.compatibility import (
+    dify_document_to_graph_design,
+    chatdev_document_to_graph_design,
+    langflow_document_to_graph_design,
+    write_graph_design_json,
+)
+```
+
+这些 helper 可以在不构建可执行图的情况下生成适合 Visualizer 预览的 `{"graph_design": ...}` 文档。
+
+### Blueprint 层 API
+
+更底层的 blueprint API 主要用于扩展兼容层：
+
+```python
+from masfactory.compatibility import (
+    blueprint_to_graph,
+    blueprint_to_dify_graph,
+    blueprint_to_chatdev_graph,
+    blueprint_to_langflow_graph,
+    workflow_export_to_blueprint,
+)
+```
+
+`GraphBlueprint` 是导入器使用的标准化中间表示。它包含 `ExternalNode` 和 `ExternalEdge` 记录，随后再被物化为 MASFactory 节点和边。
