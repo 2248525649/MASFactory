@@ -1,5 +1,5 @@
 """
-HumanEval dataset utilities (self-contained; no LATS reuse).
+HumanEval dataset utilities.
 
 Two responsibilities:
 

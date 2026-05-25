@@ -101,6 +101,7 @@ def build_graph(model, k: int = 3, t: int = 3) -> RootGraph:
             "problem": "",
             "sample_io": "",
             "language": "",
+            "current_iteration": "",
         },
         # Forward pickers stringify `sample_io` for Agent prompts. We MUST
         # NOT push that stringified form back into the parent Loop's attrs,
@@ -129,6 +130,7 @@ def build_graph(model, k: int = 3, t: int = 3) -> RootGraph:
             "algorithm": "",
             "sample_io": "",
             "language": "",
+            "current_iteration": "",
         },
         # Same reason as ExemplarPickerT: don't pollute Loop attrs with the
         # stringified `sample_io`.

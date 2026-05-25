@@ -128,11 +128,12 @@ def run_sample_io_tests(input_dict: dict[str, Any], attrs: dict[str, Any]) -> di
         }
 
     if not sample_io:
-        # No way to evaluate; treat as failure but surface a clear note.
+        # No way to evaluate; accept the code as-is so PassSwitch skips
+        # DebugLoop (which would also have no sample_io to work with).
         return {
             "code": code,
-            "observation": "No sample I/O available; cannot verify.",
-            "full_passed": False,
+            "observation": "No sample I/O available; skipping verification.",
+            "full_passed": True,
         }
 
     driver = _build_driver(code, sample_io)

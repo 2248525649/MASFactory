@@ -40,7 +40,12 @@ def _bool_signal(value: Any) -> bool:
 
 def planfanout_terminate(message: dict[str, Any], attrs: dict[str, Any]) -> bool:
     """Accumulate plans + confidence; terminate after k exemplars are processed."""
-    plan_buffer = attrs.setdefault("plan_buffer", [])
+    # Reset plan_buffer on the first iteration of each invocation to avoid
+    # stale plans leaking across graph reuses (current_iteration is already
+    # incremented to 1 by Controller._forward before this hook runs).
+    if int(attrs.get("current_iteration", 0)) <= 1:
+        attrs["plan_buffer"] = []
+    plan_buffer = attrs.get("plan_buffer", [])
 
     plan_raw = _clean(message.get("plan"), default="")
     confidence_raw = _clean(

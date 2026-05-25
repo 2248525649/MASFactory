@@ -42,9 +42,9 @@ See [`docs/workflow_design.md`](docs/workflow_design.md) for the full design con
 ### Tests (no API key required)
 
 ```bash
-python -m applications.mapcoder.tests.test_tester_node
-python -m applications.mapcoder.tests.test_dataset
-python -m applications.mapcoder.tests.test_graph_e2e_mock
+python -m applications.mapcoder.mock_tests.test_tester_node
+python -m applications.mapcoder.mock_tests.test_dataset
+python -m applications.mapcoder.mock_tests.test_graph_e2e_mock
 ```
 
 ### Real LLM run on a HumanEval JSONL

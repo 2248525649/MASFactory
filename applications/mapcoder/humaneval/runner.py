@@ -51,7 +51,7 @@ def run_one_problem(
     try:
         out, _attrs = g.invoke(
             {"problem": prompt, "language": language, "k": k},
-            attributes={"sample_io": sample_io},
+            attributes={"sample_io": sample_io, "problem": prompt, "language": language},
         )
         final_code = out.get("final_code", "") if isinstance(out, dict) else ""
         graph_passed = bool(out.get("final_passed", False)) if isinstance(out, dict) else False
