@@ -61,6 +61,45 @@ python -m applications.mapcoder.main `
     --k 3 --t 3
 ```
 
+## Reproduction Result
+
+本项目使用 MASFactory 复现 MapCoder 论文中的多智能体流程，并在完整 HumanEval 数据集上进行评测。
+
+论文在 HumanEval 上使用 `k = t = 5`，并分别报告了 ChatGPT (`gpt-3.5-turbo-1106`) 和 GPT-4 (`gpt-4-1106-preview`) 下的结果：
+
+### 1.MapCoder Evaluation Result
+
+**论文中使用的评估参数：**
+
+![Paper evaluation setting](docs/assets/paper_evaluation_setting.png)
+
+**论文中的评估结果：**
+
+![Paper HumanEval result](docs/assets/paper_humaneval_result.png)
+
+### 2.Reproduction Result
+
+**本项目复现配置：**
+
+![Reproduction run command](docs/assets/reproduction_run_command.png)
+
+**最终结果：**
+
+![Reproduction final result](docs/assets/reproduction_final_result.png)
+
+| Model | Approach | HumanEval |
+| --- | --- | --- |
+| ChatGPT (`gpt-3.5-turbo-1106`) | MapCoder | 80.5% |
+| GPT-4 (`gpt-4-1106-preview`) | MapCoder | 93.9% |
+| `gpt-4o-mini` | MASFactory MapCoder reproduction | 83.5% |
+
+
+### 3.Analysis
+
+本次复现使用的是 `gpt-4o-mini`，它不是论文中的 `gpt-3.5-turbo-1106` 或 `gpt-4-1106-preview`。从模型能力上看，`gpt-4o-mini` 是更新的轻量模型，通常强于旧版 GPT-3.5，但整体能力和复杂代码推理稳定性仍弱于完整 GPT-4。因此，本项目在 HumanEval 上取得 83.5% 的 Pass@1，高于论文中 ChatGPT 版本的 80.5%，但低于 GPT-4 版本的 93.9%，结果趋势是合理的。
+
+需要注意的是，该结果主要用于验证 MASFactory 对 MapCoder 工作流的复现效果。由于模型版本、服务商实现、采样行为和运行环境可能不同，该数值不应与论文结果做严格逐点对齐。
+
 ## Notes
 
 - The Tester runs each candidate inside an isolated `sys.executable -I -c <driver>` subprocess with a 10s timeout (override with `MAPCODER_SANDBOX_TIMEOUT_S`).
