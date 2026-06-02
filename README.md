@@ -258,7 +258,7 @@ Keep the summary concise and faithful.
 
 ## 🌟 Application Demo
 
-Below are two example applications built with MASFactory for two common scenarios: a daily AI paper briefing and a paper-to-PPT workflow. The workflow code behind both products is open-sourced in this repository for reuse and study.
+Below are three example applications built with MASFactory for common agentic workflow scenarios: a daily AI paper briefing, a paper-to-PPT workflow, and a visual skill-building studio. The workflow code behind these products is open-sourced in this repository for reuse and study.
 
 ### NowWhat
 
@@ -278,6 +278,17 @@ Below are two example applications built with MASFactory for two common scenario
 
 <p align="center">
   <img src="applications/ohnoppt/assets/ohnoppt-preview-en.png" alt="OhNoPPT English product preview" width="980" />
+</p>
+
+### ClawCanvas
+
+**ClawCanvas** is a visual skill studio for designing, testing, and packaging MASFactory workflows as reusable skills. Users can build an agent workflow on a web canvas, validate the graph structure, run supported nodes through MASFactory, and export the workflow together with skill metadata as a publishable skill package.
+
+- Hosted experience: https://clawcanvas.masfactory.dev
+- Application code: `applications/clawcanvas/`
+
+<p align="center">
+  <img src="applications/clawcanvas/assets/clawcanvas-preview-en.png" alt="ClawCanvas English product preview" width="980" />
 </p>
 
 ## ▶️ Run the Multi-Agent Reproductions in This Repo (`applications/`)
@@ -336,6 +347,7 @@ Documentation: https://docs.masfactory.dev/
 │   ├── chatdev_lite_vibegraph/
 │   ├── agentverse/
 │   ├── camel/
+│   ├── clawcanvas/
 │   ├── hugggpt2/
 │   ├── metagpt/
 │   ├── nowwhat/
