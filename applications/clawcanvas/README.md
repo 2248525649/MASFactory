@@ -78,7 +78,7 @@ Run the backend:
 python -m clawcanvas_backend.app
 ```
 
-By default the backend serves the built frontend and API on `0.0.0.0:15051`.
+By default the backend serves the built frontend and API on `0.0.0.0:15081`.
 Override with `CLAWCANVAS_HOST` and `CLAWCANVAS_PORT` if needed.
 
 ## Frontend
@@ -102,13 +102,13 @@ npm run dev
 
 In production the built frontend calls the API through same-origin `/api`.
 
-## Deploy On Port 15051
+## Deploy On Port 15081
 
 From the repository root:
 
 ```bash
-applications/clawcanvas/deploy_15051.sh
+applications/clawcanvas/deploy_15081.sh
 ```
 
-The script installs backend dependencies, builds the frontend, and starts gunicorn on `0.0.0.0:15051`.
-Open `http://127.0.0.1:15051/` locally, or expose port `15051` from the host.
+The script installs backend dependencies, builds the frontend, and starts gunicorn on `0.0.0.0:15081`.
+Open `http://127.0.0.1:15081/` locally, or expose port `15081` from the host.

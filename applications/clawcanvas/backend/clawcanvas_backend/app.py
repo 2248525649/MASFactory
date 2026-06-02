@@ -31,7 +31,7 @@ APP_ROOT = Path(__file__).resolve().parents[2]
 EXPORT_ROOT = APP_ROOT / "exports"
 FRONTEND_DIST = APP_ROOT / "frontend" / "dist"
 DEFAULT_HOST = "0.0.0.0"
-DEFAULT_PORT = 15051
+DEFAULT_PORT = 15081
 DOWNLOADABLE_EXPORT_KEYS = {
     "skill_md_path",
     "skill_zip_path",
@@ -334,9 +334,13 @@ def create_app() -> "Flask":
     return app
 
 
-if __name__ == "__main__":  # pragma: no cover
+def main() -> None:
     create_app().run(
         host=os.environ.get("CLAWCANVAS_HOST", DEFAULT_HOST),
         port=_env_int("CLAWCANVAS_PORT", _env_int("PORT", DEFAULT_PORT)),
         debug=_env_bool("CLAWCANVAS_DEBUG", False),
     )
+
+
+if __name__ == "__main__":  # pragma: no cover
+    main()
