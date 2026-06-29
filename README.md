@@ -27,7 +27,7 @@
     <img alt="License" src="https://img.shields.io/badge/License-Apache%202.0-5b8c5a" />
   </a>
   <br />
-  <a href="https://discord.gg/eaCU2pah">
+  <a href="https://discord.gg/RWRYhWq7">
     <img alt="Discord" src="https://img.shields.io/badge/Contact-Discord-5865F2?logo=discord&logoColor=white" />
   </a>
   <a href="https://qm.qq.com/cgi-bin/qm/qr?k=jTn5-wNlUg2SZ0OfyMlA4h9eqBx4OX6x&amp;jump_from=webapi&amp;authKey=NDNs1xg1usRYTIuO7XsgQjJVYqwntJL6NX1pOmR9J15tAPoJ8B3NSAVTD1tnR2+m">
@@ -258,7 +258,7 @@ Keep the summary concise and faithful.
 
 ## 🌟 Application Demo
 
-Below are two example applications built with MASFactory for two common scenarios: a daily AI paper briefing and a paper-to-PPT workflow. The workflow code behind both products is open-sourced in this repository for reuse and study.
+Below are three example applications built with MASFactory for common agentic workflow scenarios: a daily AI paper briefing, a paper-to-PPT workflow, and a visual skill-building studio. The workflow code behind these products is open-sourced in this repository for reuse and study.
 
 ### NowWhat
 
@@ -278,6 +278,17 @@ Below are two example applications built with MASFactory for two common scenario
 
 <p align="center">
   <img src="applications/ohnoppt/assets/ohnoppt-preview-en.png" alt="OhNoPPT English product preview" width="980" />
+</p>
+
+### ClawCanvas
+
+**ClawCanvas** is a visual skill studio for designing, testing, and packaging MASFactory workflows as reusable skills. Users can build an agent workflow on a web canvas, validate the graph structure, run supported nodes through MASFactory, and export the workflow together with skill metadata as a publishable skill package.
+
+- Hosted experience: https://clawcanvas.masfactory.dev
+- Application code: `applications/clawcanvas/`
+
+<p align="center">
+  <img src="applications/clawcanvas/assets/clawcanvas-preview-en.png" alt="ClawCanvas English product preview" width="980" />
 </p>
 
 ## ▶️ Run the Multi-Agent Reproductions in This Repo (`applications/`)
@@ -336,6 +347,7 @@ Documentation: https://docs.masfactory.dev/
 │   ├── chatdev_lite_vibegraph/
 │   ├── agentverse/
 │   ├── camel/
+│   ├── clawcanvas/
 │   ├── hugggpt2/
 │   ├── metagpt/
 │   ├── nowwhat/
@@ -369,4 +381,4 @@ Documentation: https://docs.masfactory.dev/
 ## 📬 Contact
 QQ: 2157069383
 
-Discord: https://discord.gg/eaCU2pah
+Discord: https://discord.gg/RWRYhWq7

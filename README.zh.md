@@ -27,7 +27,7 @@
     <img alt="License" src="https://img.shields.io/badge/License-Apache%202.0-5b8c5a" />
   </a>
   <br />
-  <a href="https://discord.gg/eaCU2pah">
+  <a href="https://discord.gg/RWRYhWq7">
     <img alt="Discord" src="https://img.shields.io/badge/Contact-Discord-5865F2?logo=discord&logoColor=white" />
   </a>
   <a href="https://qm.qq.com/cgi-bin/qm/qr?k=jTn5-wNlUg2SZ0OfyMlA4h9eqBx4OX6x&amp;jump_from=webapi&amp;authKey=NDNs1xg1usRYTIuO7XsgQjJVYqwntJL6NX1pOmR9J15tAPoJ8B3NSAVTD1tnR2+m">
@@ -256,7 +256,7 @@ description: 清晰总结研究论文
 
 ## 🌟 示例应用
 
-下面展示的是两个基于 MASFactory 构建的示例应用，分别面向“AI 论文日报”和“Paper2PPT”两个典型场景。它们对应的 workflow 代码都已经在本仓库开源，方便学习和复用 MASFactory 的多智能体编排思路。
+下面展示的是三个基于 MASFactory 构建的示例应用，分别面向“AI 论文日报”、“Paper2PPT”和“可视化 Skill 构建”三个典型场景。它们对应的 workflow 代码都已经在本仓库开源，方便学习和复用 MASFactory 的多智能体编排思路。
 
 ### NowWhat
 
@@ -276,6 +276,17 @@ description: 清晰总结研究论文
 
 <p align="center">
   <img src="applications/ohnoppt/assets/ohnoppt-preview-zh.png" alt="OhNoPPT 中文版应用预览" width="980" />
+</p>
+
+### ClawCanvas
+
+**ClawCanvas** 是一个面向 MASFactory 工作流的可视化 Skill Studio。用户可以在 Web 画布上搭建智能体工作流，校验图结构，调用 MASFactory 执行已支持的节点，并把工作流与 skill 元数据一起导出为可发布、可复用的 skill package。
+
+- 在线体验地址：https://clawcanvas.masfactory.dev
+- 应用代码：`applications/clawcanvas/`
+
+<p align="center">
+  <img src="applications/clawcanvas/assets/clawcanvas-preview-zh.png" alt="ClawCanvas 中文版应用预览" width="980" />
 </p>
 
 ## ▶️ 运行仓库内的多智能体复现（applications/）
@@ -332,6 +343,7 @@ python applications/camel/main.py "Create a sample adder by using python"
 │   ├── chatdev_lite_vibegraph/
 │   ├── agentverse/
 │   ├── camel/
+│   ├── clawcanvas/
 │   ├── hugggpt2/
 │   ├── metagpt/
 │   ├── nowwhat/
@@ -365,4 +377,4 @@ python applications/camel/main.py "Create a sample adder by using python"
 ## 📬 交流讨论组
 QQ: 2157069383
 
-Discord: https://discord.gg/eaCU2pah
+Discord: https://discord.gg/RWRYhWq7
