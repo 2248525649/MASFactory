@@ -10,6 +10,7 @@
 - `HorizontalGraph`
 - `AdjacencyMatrixGraph`
 - `BrainstormingGraph`
+- `GeneratorVerifierGraph`
 - `HubGraph`
 - `MeshGraph`
 - `InstructorAssistantGraph`
@@ -50,6 +51,74 @@ g.build()
 out, _attrs = g.invoke({"n": 3})
 print(out)  # {'y': 8}
 ```
+
+---
+
+## GeneratorVerifierGraph
+
+`GeneratorVerifierGraph` 是一个内置的 generator-verifier 重试循环：
+
+```text
+controller -> generator -> verifier -> decision
+decision -- rejected --> controller
+decision -- accepted --> terminate
+```
+
+适合“一个节点生成候选结果，另一个节点验证是否达标”的场景。验证失败时会回到 controller 继续重试，直到 verifier 接受结果，或达到 `max_iterations` 上限。
+
+默认情况下，组件会从 verifier 输出中的 `accepted`、`verified` 或 `success` 布尔字段判断是否通过。也可以传入 `accept_condition_function` 自定义判断逻辑。
+
+```python
+from masfactory import CustomNode, GeneratorVerifierGraph, NodeTemplate, RootGraph
+
+
+def generate(input_msg: dict) -> dict:
+    attempt = int(input_msg.get("attempt", 0)) + 1
+    return {
+        "attempt": attempt,
+        "candidate": f"draft-{attempt}",
+    }
+
+
+def verify(input_msg: dict) -> dict:
+    attempt = int(input_msg["attempt"])
+    return {
+        **input_msg,
+        "accepted": attempt >= 2,
+        "feedback": "accepted" if attempt >= 2 else "try once more",
+    }
+
+
+RetryingDraft = NodeTemplate(
+    GeneratorVerifierGraph,
+    generator=NodeTemplate(CustomNode, forward=generate),
+    verifier=NodeTemplate(CustomNode, forward=verify),
+    max_iterations=3,
+    generator_input_keys={"attempt": "上一轮尝试次数"},
+    generator_output_keys={"attempt": "当前尝试次数", "candidate": "候选结果"},
+    verifier_output_keys={
+        "attempt": "当前尝试次数",
+        "candidate": "候选结果",
+        "accepted": "是否通过验证",
+        "feedback": "验证反馈",
+    },
+)
+
+g = RootGraph(
+    name="generator_verifier_demo",
+    nodes=[("draft", RetryingDraft)],
+    edges=[
+        ("entry", "draft", {"attempt": "初始尝试次数"}),
+        ("draft", "exit", {"candidate": "通过验证的候选结果"}),
+    ],
+)
+
+g.build()
+out, _attrs = g.invoke({"attempt": 0})
+print(out)  # 包含 verifier 输出中通过验证的候选结果
+```
+
+generator 和 verifier 既可以是 `CustomNode` 模板，也可以是 `Agent` 模板。使用 Agent 时，建议让 verifier 明确输出 `accepted` 这类布尔字段，方便 decision switch 稳定路由。
 
 ### 命令式
 

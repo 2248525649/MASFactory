@@ -11,6 +11,7 @@ Common built-in composite components include:
 - `AdjacencyListGraph`
 - `AdjacencyMatrixGraph`
 - `BrainstormingGraph`
+- `GeneratorVerifierGraph`
 - `HubGraph`
 - `MeshGraph`
 - `InstructorAssistantGraph`
@@ -55,6 +56,74 @@ g.build()
 out, _attrs = g.invoke({"n": 3})
 print(out)  # {'y': 8}
 ```
+
+---
+
+## GeneratorVerifierGraph
+
+`GeneratorVerifierGraph` is a prebuilt retry loop for generator-verifier workflows:
+
+```text
+controller -> generator -> verifier -> decision
+decision -- rejected --> controller
+decision -- accepted --> terminate
+```
+
+Use it when one node creates a candidate result and another node decides whether the result is good enough. If the verifier rejects the result, the loop retries until the verifier accepts it or `max_iterations` is reached.
+
+By default, acceptance is detected from a boolean field named `accepted`, `verified`, or `success` in the verifier output. You can also pass `accept_condition_function` for custom acceptance logic.
+
+```python
+from masfactory import CustomNode, GeneratorVerifierGraph, NodeTemplate, RootGraph
+
+
+def generate(input_msg: dict) -> dict:
+    attempt = int(input_msg.get("attempt", 0)) + 1
+    return {
+        "attempt": attempt,
+        "candidate": f"draft-{attempt}",
+    }
+
+
+def verify(input_msg: dict) -> dict:
+    attempt = int(input_msg["attempt"])
+    return {
+        **input_msg,
+        "accepted": attempt >= 2,
+        "feedback": "accepted" if attempt >= 2 else "try once more",
+    }
+
+
+RetryingDraft = NodeTemplate(
+    GeneratorVerifierGraph,
+    generator=NodeTemplate(CustomNode, forward=generate),
+    verifier=NodeTemplate(CustomNode, forward=verify),
+    max_iterations=3,
+    generator_input_keys={"attempt": "previous attempt counter"},
+    generator_output_keys={"attempt": "attempt counter", "candidate": "candidate result"},
+    verifier_output_keys={
+        "attempt": "attempt counter",
+        "candidate": "candidate result",
+        "accepted": "whether the result passed verification",
+        "feedback": "verifier feedback",
+    },
+)
+
+g = RootGraph(
+    name="generator_verifier_demo",
+    nodes=[("draft", RetryingDraft)],
+    edges=[
+        ("entry", "draft", {"attempt": "initial attempt counter"}),
+        ("draft", "exit", {"candidate": "accepted candidate"}),
+    ],
+)
+
+g.build()
+out, _attrs = g.invoke({"attempt": 0})
+print(out)  # contains the accepted candidate from the verifier output
+```
+
+The generator and verifier can be `Agent` templates as well as `CustomNode` templates. For agent-based workflows, make the verifier return an explicit boolean field such as `accepted` so the decision switch can route reliably.
 
 ### Imperative (alternative)
 
